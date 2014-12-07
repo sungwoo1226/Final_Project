@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html >
+<head>
+	<title>Full player example</title>
+	<!-- Uncomment the following meta tag if you have issues rendering this page on an intranet or local site. -->    
+	<!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"/> -->
+
+	<script type="text/javascript">
+	function KeyEventHandle(){ 
+		if( ( event.ctrlKey == true && ( event.keyCode == 78 || event.keyCode == 82 ) ) || ( event.keyCode >= 112 && event.keyCode <= 123 )) { 
+			event.keyCode = 0; 
+			event.cancelBubble = true; 
+			event.returnValue = false; 
+		} 
+	} 
+	document.onkeydown=KeyEventHandle; 
+	document.onkeyup=KeyEventHandle; 
+	
+	
+		function init() {        // Master function, encapsulates all functions
+			var video = document.getElementById("Video1");
+			var widthUrl="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/가로-테두리.png";
+			var heightUrl="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/세로-테두리.png";
+			
+            if (video.canPlayType) {   // tests that we have HTML5 video support
+                // if successful, display buttons and set up events
+                document.getElementById("buttonbarUp").style.display = "block";                
+                document.getElementById("buttonbarDown").style.display = "block";
+                document.getElementById("inputField").style.display = "hide";
+
+                // helper functions
+                //  play video
+                function vidplay(evt) {
+                    if (video.src == "") {  // inital source load
+                    	getVideo();
+                    }
+                    button = evt.target; //  get the button id to swap the text based on the state                                    
+                    if (video.paused) {   // play the file, and display pause symbol
+                    	video.play();
+                    	evt.target.innerHTML = "<img alt='' src='http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/일시정지.png' width='65' height='30'/>"
+                    } else {              // pause the file, and display play symbol  
+                    	video.pause();
+                    	evt.target.innerHTML = "<img alt='' src='http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/재생.png' width='65' height='30' />"
+                    }
+                }
+                //  load video file from input field
+                function getVideo() {
+                    var fileURL = document.getElementById("videoFile").value;  // get input field                    
+                    if (fileURL != "") {
+                    	video.src = fileURL;
+                        video.load();  // if HTML source element is used
+                        document.getElementById("play").click();  // start play
+                    } else {
+                        errMessage("Enter a valid video URL");  // fail silently
+                    }
+                }
+
+
+
+                //  button helper functions 
+                //  skip forward, backward, or restart
+                function setTime(tValue) {
+                //  if no video is loaded, this throws an exception 
+                try {
+                	if (tValue == 0) {
+                		video.currentTime = tValue;
+                	}
+                	else {
+                		video.currentTime += tValue;
+                	}
+                	
+                } catch (err) {
+                         // errMessage(err) // show exception
+                         errMessage("Video content might not be loaded");
+                     }
+                 }
+                //  display an error message 
+                function errMessage(msg) {
+                // displays an error message for 5 seconds then clears it
+                document.getElementById("errorMsg").textContent = msg;
+                setTimeout("document.getElementById('errorMsg').textContent=''", 5000);
+            }
+                // change volume based on incoming value 
+                function setVol(value) {
+                	var vol = video.volume;
+                	vol += value;
+                    //  test for range 0 - 1 to avoid exceptions
+                    if (vol >= 0 && vol <= 1) {
+                        // if valid value, use it
+                        video.volume = vol;
+                    } else {
+                        // otherwise substitute a 0 or 1
+                        video.volume = (vol < 0) ? 0 : 1;                        
+                    }
+                }
+                
+
+                //  button events               
+                //  Play
+                document.getElementById("play").addEventListener("click", vidplay, false);
+                //  Restart
+                document.getElementById("restart").addEventListener("click", function () {
+                	setTime(0);
+                }, false);
+                //  Skip backward 10 seconds
+                document.getElementById("rew").addEventListener("click", function () {
+                	setTime(-10);
+                }, false);
+                //  Skip forward 10 seconds
+                document.getElementById("fwd").addEventListener("click", function () {
+                	setTime(10);
+                }, false);
+                //  set src == latest video file URL
+                document.getElementById("loadVideo").addEventListener("click", getVideo, false);
+
+                // fail with message 
+                video.addEventListener("error", function (err) {
+                	errMessage(err);
+                }, true);
+                // volume buttons
+                document.getElementById("volDn").addEventListener("click", function () {
+                    setVol(-.1); // down by 10%
+                }, false);
+                document.getElementById("volUp").addEventListener("click", function () {
+                    setVol(.1);  // up by 10%
+                }, false);
+
+                // playback speed buttons
+                document.getElementById("slower").addEventListener("click", function () {
+                	video.playbackRate -= .25;
+                }, false);
+                document.getElementById("faster").addEventListener("click", function () {
+                	video.playbackRate += .25;
+                }, false);
+                document.getElementById("normal").addEventListener("click", function () {
+                	video.playbackRate = 1;
+                }, false);
+                document.getElementById("mute").addEventListener("click", function (evt) {
+                	if (video.muted) {
+                		video.muted = false;
+                		evt.target.innerHTML = "<img alt='volume on button' src='http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/음소거off.png' width='65' height='30' />"
+                	} else {
+                		video.muted = true;
+                		evt.target.innerHTML = "<img alt='Mute button' src='http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/음소거on.png'  width='65' height='30'/>"
+                	}
+                }, false);
+                document.getElementById("1280x775").addEventListener("click", function(){
+                	video.width = 1280;
+                	video.height = 775;
+                	window.resizeTo(video.width+100, video.height+250);
+                	document.TableWidth1.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1280x775w.png";
+                	document.TableHeight1.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1280x775h.png";
+                	document.TableWidth2.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1280x775w.png";
+                	document.TableHeight2.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1280x775h.png";
+                }, false);
+
+                document.getElementById("1152x698").addEventListener("click", function(){
+                	video.width = 1152;
+                	video.height = 698;
+                	window.resizeTo(video.width+100, video.height+250);
+                	document.TableWidth1.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1152x698w.png";
+                	document.TableHeight1.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1152x698h.png";
+                	document.TableWidth2.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1152x698w.png";
+                	document.TableHeight2.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1152x698h.png";
+                }, false);
+
+                document.getElementById("1024x620").addEventListener("click", function(){
+                	video.width = 1024;
+                	video.height = 620;
+                	window.resizeTo(video.width+100, video.height+250);;
+                	document.TableWidth1.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1024x620w.png";
+                	document.TableHeight1.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1024x620h.png";
+                	document.TableWidth2.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1024x620w.png";
+                	document.TableHeight2.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1024x620h.png";
+                } ,false);
+
+                document.getElementById("896x543").addEventListener("click", function(){
+                	video.width = 896;
+                	video.height = 543;
+                	window.resizeTo(video.width+100, video.height+250);
+                	document.TableWidth1.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/896x543w.png";
+                	document.TableHeight1.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/896x543h.png";
+                	document.TableWidth2.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/896x543w.png";
+                	document.TableHeight2.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/896x543h.png";
+                } ,false);
+
+                document.getElementById("768x465").addEventListener("click", function(){
+                	video.width = 768;
+                	video.height = 465;
+                	window.resizeTo(video.width+100, video.height+250);
+                	document.TableWidth1.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/768x465w.png";
+                	document.TableHeight1.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/768x465h.png";
+                	document.TableWidth2.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/768x465w.png";
+                	document.TableHeight2.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/768x465h.png";
+                } ,false);
+
+                document.getElementById("704x427").addEventListener("click", function(){
+                	video.width = 704;
+                	video.height = 427;
+                	window.resizeTo(video.width+100, video.height+250);
+                	document.TableWidth1.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/704x427w.png";
+                	document.TableHeight1.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/704x427h.png";
+                	document.TableWidth2.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/704x427w.png";
+                	document.TableHeight2.src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/704x427h.png";
+                } ,false);
+
+            } // end of runtime
+        }// end of master 
+        </script>
+    </head>
+
+
+    <body onload="init();" background="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/임시배경2.png" oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+
+
+    	<table BORDER=0 CELLSPACING=0 CELLPADDING=0>
+    		<tr><!--1행 up 버튼 입력 위치-->
+    			<div id="buttonbarUp" style="display: none;")>
+    				<button id="1280x775" title="size button"  style="background-color:transparent;border:0 solid black;margin-right:-10px;margin-left:-10px;"><img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1280x775_I.png" width=107px height=37px></button>
+
+    				<button id="1152x698" title="size button" style="background-color:transparent;border:0 solid black;margin-right:-10px;margin-left:-10px;"><img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1152x698_I.png" width=107px height=37px></button>
+
+    				<button id="1024x620" title="size button" style="background-color:transparent;border:0 solid black;margin-right:-10px;margin-left:-10px;"><img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1024x620_I.png" width=107px height=37px></button>
+
+    				<button id="896x543" title="size button" style="background-color:transparent;border:0 solid black;margin-right:-10px;margin-left:-10px;"><img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/896x543_I.png" width=107px height=37px></button>
+
+    				<button id="768x465" title="size button" style="background-color:transparent;border:0 solid black;margin-right:-10px;margin-left:-10px;"><img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/768x465_I.png" width=107px height=37px></button>
+
+    				<button id="704x427" title="size button" style="background-color:transparent;border:0 solid black;margin-right:-10px;margin-left:-10px;"><img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/704x427_I.png" width=107px height=37px></button>
+    			</div>
+    		</tr>
+
+    		<tr>
+    			<td>
+    				<img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/모서리.png">
+    			</td>
+
+    			<td>
+    				<img name="TableWidth1" src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1024x620w.png">
+    				
+    			</td>
+
+    			<td>
+    				<img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/모서리.png">
+    			</td>
+    		</tr>
+
+    		<tr>
+    			<td>
+    				<img name="TableHeight1" src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1024x620h.png">
+    			</td>
+
+    			<td><!--비디오 입력 위치 -->
+    				<video controls id="Video1" autoplay  style="border: 0px solid blue;" height="620" width="1024" title="video element">            
+    					HTML5 Video is required for this example
+    				</video>
+    			</td>
+
+    			<td>
+    				<img name="TableHeight2" src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1024x620h.png">
+    			</td>
+    			
+    			<td align=left valign=top><!--문제 입력 위치-->
+    				<img src="" style="margin-left:10px";>
+    			</td>
+    		</tr>
+
+    		<tr>
+    			<td>
+    				<img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/모서리.png">
+    			</td>
+
+    			<td>
+    				<img name="TableWidth2" src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1024x620w.png">
+    			</td>
+
+    			<td>
+    				<img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/모서리.png">
+    			</td>
+    		</tr>
+
+    		<tr>
+    			<div id="buttonbarDown" style="display: none;")>
+    				<td colspan=2 align=center>
+
+    					<button id="restart" title="Restart button" style="background-color:transparent;border:0 solid black;margin-right:-10px;margin-left:-10px;">
+    						<img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/처음으로.png" width="65" height="30">
+    					</button>
+
+    					<button id="slower" title="Slower playback button" style="background-color:transparent;border:0 solid black;margin-right:-10px;margin-left:-10px;">
+    						<img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/느리게.png" width="65" height="30">
+    					</button>
+
+    					<button id="rew" title="Rewind button" style="background-color:transparent;border:0 solid black;margin-right:-10px;margin-left:-10px;">
+    						<img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/뒤로가기.png" width="65" height="30" />
+    					</button>
+
+    					<button id="play" title="Play button" style="background-color:transparent;border:0 solid black;margin-right:-10px;margin-left:-10px;">
+    						<img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/재생.png" width="65" height="30">
+    					</button>
+
+    					<button id="fwd" title="Forward button" style="background-color:transparent;border:0 solid black;margin-right:-10px;margin-left:-10px;">
+    						<img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/건너뛰기.png" width="65" height="30">
+    					</button>
+
+    					<button id="faster" title="Faster playback button" style="background-color:transparent;border:0 solid black;margin-right:-10px;margin-left:-10px;">
+    						<img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/빠르게.png" width="65" height="30">
+    					</button>
+
+    					<button id="normal" title="Reset playback rate button" style="background-color:transparent;border:0 solid black;margin-right:-10px;margin-left:-10px;">
+    						<img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/1배속.png" width="65" height="30">
+    					</button>
+
+    					<button id="volDn"  title="Volume down button" style="background-color:transparent;border:0 solid black;margin-right:-10px;margin-left:-10px;">
+    						<img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/소리작게.png" width="65" height="30">
+    					</button>
+
+    					<button id="volUp"  title="Volume up button" style="background-color:transparent;border:0 solid black;margin-right:-10px;margin-left:-10px;">
+    						<img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/소리크게.png" width="65" height="30">
+    					</button>
+
+    					<button id="mute" title="Mute button" style="background-color:transparent;border:0 solid black;margin-right:-10px;margin-left:-10px;">
+    						<img src="http://nolbu1009.cafe24.com/wp/wp-content/uploads/2014/07/음소거off.png" width="65" height="30">
+    					</button>
+
+    				</td>
+    			</div>
+    		</tr>
+    		
+    	</table>
+    	
+    	<br/>  
+
+    	<div id= "inputField" style="display:none;" >
+    		
+    		<!--동영상 삽입 부분-->
+    		<input type="text" id="videoFile" style="width: 400px;"  title="video file input field" value="http://mathkenschool.synology.me:5000/fbsharing/PzbZkOJj" />        
+    		<button id="loadVideo" title="Load video button" >Load</button>
+    	</label>
+    </div>
+
+    <div title="Error message area" id="errorMsg" style="color:Red;"></div>  
+</body>
+</html>
