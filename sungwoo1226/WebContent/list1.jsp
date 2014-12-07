@@ -92,6 +92,7 @@ try{
 				<tr>
 					<th>강의명</th>
 					<th>강의보기</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -102,6 +103,11 @@ try{
 					
 					<td><%=rs.getString("lec_name")%></td>
 					<td><%=rs.getString("lec_url")%></td>
+					<td><a href="signup.jsp?id=<%=rs.getInt("id")%>"
+							class="btn btn-xs">modify</a> <a href="#"
+							class="btn btn-xs btn-danger" data-action="delete"
+							data-id="<%=rs.getInt("id")%>">delete</a></td>
+					</tr>
 				</tr>
 				<%
 					}
@@ -169,9 +175,6 @@ try{
 				if (conn != null) try {conn.close();} catch (SQLException e) {}
 			}
 		%>
-		<div class="form-group">
-			<a href="signup.jsp" class="btn btn-primary">Sign Up</a>
-		</div>
 	</div>
 	<jsp:include page="share/footer.jsp" />
 </body>

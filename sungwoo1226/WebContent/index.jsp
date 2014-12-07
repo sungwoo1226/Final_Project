@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" import="java.util.*" import="java.sql.*"%>
-	
+
 <%
-try{
-	 Class.forName("com.mysql.jdbc.Driver");
-}catch(ClassNotFoundException e){
-	e.printStackTrace();
-}
-	
+	try {
+		Class.forName("com.mysql.jdbc.Driver");
+	} catch (ClassNotFoundException e) {
+		e.printStackTrace();
+	}
+
 	Connection conn = null;
 	Statement stmt = null;
 	ResultSet rs = null;
@@ -27,6 +27,8 @@ try{
 	int numInPage = 10; // 한페이지에 출력할 아이템 개수
 	int startPos = (pageNo - 1) * numInPage; // 몇 번째 아이템 부터 이 페이지에?
 	int numItems, numPages;
+	
+	
 %>
 <!DOCTYPE html>
 <html>
@@ -37,11 +39,16 @@ try{
 <link href="css/base.css" rel="stylesheet">
 <script src="js/jquery-1.8.2.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
+
+
+
 </head>
 <body>
 	<jsp:include page="share/header.jsp">
 		<jsp:param name="current" value="home" />
 	</jsp:include>
+
+
 
 	<div class="container">
 		<%
@@ -69,7 +76,18 @@ try{
 								+ startPos + ", " + numInPage);
 				String gender;
 		%>
-		<img src="img/web2.jpg" width="700" height="467" alt=""/>
+
+
+		
+		
+		<img src="img/web2.jpg" width="700" height="467" alt="" />
+		
+		<script type= text/javascript>
+			alert(<%out.println(session.getAttribute("per"));%>);
+		</script>
+		
+		<% if(session.getAttribute("per") != null){ %>
+		
 		<div class="row">
 			<div class="col-md-12 page-info">
 				<div class="pull-left">
@@ -80,38 +98,43 @@ try{
 				</div>
 			</div>
 		</div>
-		<table class="table table-bordered table-stripped">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Email</th>
-					<th>Gender</th>
-					<th>Country</th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				<%
-					while (rs.next()) {
-							gender = rs.getString("gender").equals("M") ? "남성" : "여성";
-				%>
-				<tr>
-					<td><a href="show.jsp?id=<%=rs.getInt("id")%>"><%=rs.getString("userid")%></a></td>
-					<td><%=rs.getString("name")%></td>
-					<td><%=rs.getString("email")%></td>
-					<td><%=gender%></td>
-					<td><%=rs.getString("country")%></td>
-					<td><a href="signup.jsp?id=<%=rs.getInt("id")%>"
-						class="btn btn-xs">modify</a> <a href="#"
-						class="btn btn-xs btn-danger" data-action="delete"
-						data-id="<%=rs.getInt("id")%>">delete</a></td>
-				</tr>
-				<%
-					}
-				%>
-			</tbody>
-		</table>
+
+		
+
+		<div id="admin_for">
+			<table class="table table-bordered table-stripped">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Email</th>
+						<th>Gender</th>
+						<th>Country</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<%
+						while (rs.next()) {
+								gender = rs.getString("gender").equals("M") ? "남성" : "여성";
+					%>
+					<tr>
+						<td><a href="show.jsp?id=<%=rs.getInt("id")%>"><%=rs.getString("userid")%></a></td>
+						<td><%=rs.getString("name")%></td>
+						<td><%=rs.getString("email")%></td>
+						<td><%=gender%></td>
+						<td><%=rs.getString("country")%></td>
+						<td><a href="signup.jsp?id=<%=rs.getInt("id")%>"
+							class="btn btn-xs">modify</a> <a href="#"
+							class="btn btn-xs btn-danger" data-action="delete"
+							data-id="<%=rs.getInt("id")%>">delete</a></td>
+					</tr>
+					<%
+						}
+					%>
+				</tbody>
+			</table>
+		</div>
 
 
 		<nav class="pagination_centered">
@@ -162,20 +185,31 @@ try{
 			</ul>
 		</nav>
 		<%
+		}
 			} catch (SQLException e) {
 				// SQL 에러의 경우 에러 메시지 출력
 				out.print("<div class='alert'>" + e.getLocalizedMessage()
 						+ "</div>");
 			} finally {
 				// 무슨 일이 있어도 리소스를 제대로 종료
-				if (rs != null) try {rs.close();} catch (SQLException e) {}
-				if (stmt != null) try {stmt.close();} catch (SQLException e) {}
-				if (conn != null) try {conn.close();} catch (SQLException e) {}
+				if (rs != null)
+					try {
+						rs.close();
+					} catch (SQLException e) {
+					}
+				if (stmt != null)
+					try {
+						stmt.close();
+					} catch (SQLException e) {
+					}
+				if (conn != null)
+					try {
+						conn.close();
+					} catch (SQLException e) {
+					}
 			}
 		%>
-		<div class="form-group">
-			<a href="signup.jsp" class="btn btn-primary">Sign Up</a>
-		</div>
+		
 	</div>
 	<jsp:include page="share/footer.jsp" />
 </body>

@@ -13,11 +13,12 @@ CREATE TABLE users (
 	email VARCHAR(100) UNIQUE,
 	country VARCHAR(100),
 	gender CHAR(1) NOT NULL,
-	favorites VARCHAR(255)
+	favorites VARCHAR(255),
+	per int
 );
 
-INSERT INTO users VALUES (1, 'admin', 'administrator', 'asdf', 'wow_mamond@naver.com', 'KOREA','M', null);
-INSERT INTO users VALUES (2, 'JS', 'Jisung', 'asdf', 'nolbu1009@gmail.com', 'USA','M', null);
+INSERT INTO users VALUES (1, 'admin', 'administrator', 'asdf', 'wow_mamond@naver.com', 'KOREA','M', null, 1);
+INSERT INTO users VALUES (2, 'JS', 'Jisung', 'asdf', 'nolbu1009@gmail.com', 'USA','M', null, null);
 
 create table list1(
 	id int auto_increment primary key,
