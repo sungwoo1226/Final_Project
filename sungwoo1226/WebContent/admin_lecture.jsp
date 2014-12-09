@@ -109,7 +109,7 @@ int numItems, numPages;
 					
 					<td><%=rs.getString("lec_name")%></td>
 					<td><%=rs.getString("lec_url")%></td>
-					<td><a href="admin_lecture.jsp?id=<%=rs.getInt("id")%>"
+					<td><a href="admin_lecture_addlec.jsp?id=<%=rs.getInt("id")%>"
 							class="btn btn-xs">modify</a> <a href="#"
 							class="btn btn-xs btn-danger" data-action="delete"
 							data-id="<%=rs.getInt("id")%>">delete</a></td>
