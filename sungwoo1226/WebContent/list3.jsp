@@ -40,19 +40,30 @@ try{
 	<script src="js/bootstrap.min.js"></script>
 </head>
 <body>
-<jsp:include page="share/header.jsp">
+	<jsp:include page="share/header.jsp">
 		<jsp:param name="current" value="Lecture_list1" />
 	</jsp:include>
 
-		<img src="img/webtest.jpg" width="200" height="300" alt=""/>
-	<%
-			out.print("선생님 : 정성우");
-	%>
-		<img src="img/webtest.jpg" width="200" height="300" alt=""/>
-		<%
-			out.print("선생님 : 정성우");
-	%>
 	<div class="container">
+		<table class="table table-bordered table-stripped">
+			<tr>
+				<td><img src="img/ken.png" width="200" height="300" alt="" />
+				
+				<ul>
+				<li>강좌유형 : 문제풀이</li>
+				<li>강좌구성 : 주 1회 / 총 10강 713분</li>
+				<li>제작방식 : 동영상 강의</li>
+				</ul>
+				</td>
+				<td><img src="img/final.jpg" width="200" height="300" alt="" />
+				
+				<ul>
+				<li>대상학년 : 고3</li>
+				<li>수강기간 : 80일(교재배송기간포함)</li>
+				</ul>
+				</td>
+			
+		</table>
 		<%
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
@@ -74,7 +85,6 @@ try{
 				// users 테이블 SELECT
 				stmt = conn.createStatement();
 				rs = stmt.executeQuery("SELECT * FROM list1 ORDER BY id LIMIT "+ startPos + ", " + numInPage);
-				String gender;
 		%>
 
 		<div class="row">
@@ -99,10 +109,10 @@ try{
 					while (rs.next()) {
 				%>
 				<tr>
-					
+
 					<td><%=rs.getString("lec_name")%></td>
 					<td><%=rs.getString("lec_url")%></td>
-					</tr>
+				</tr>
 				</tr>
 				<%
 					}
@@ -161,8 +171,8 @@ try{
 				if (session.getAttribute("per") != null) {
 			%>
 			<div class="form-group">
-			<a href="admin_lecture.jsp" class="btn btn-primary">modify</a>
-		</div>
+				<a href="admin_lecture.jsp" class="btn btn-primary">modify</a>
+			</div>
 
 			<%
 				}
