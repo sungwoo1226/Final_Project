@@ -33,7 +33,7 @@ try{
 <html>
 <head>
 <meta charset="UTF-8">
-<title>강의목록1</title>
+<title>강의목록3</title>
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/base.css" rel="stylesheet">
 	<script src="js/jquery-1.8.2.min.js"></script>
@@ -41,7 +41,7 @@ try{
 </head>
 <body>
 	<jsp:include page="share/header.jsp">
-		<jsp:param name="current" value="Lecture_list1" />
+		<jsp:param name="current" value="Lecture_list3" />
 	</jsp:include>
 
 	<div class="container">
