@@ -5,9 +5,9 @@
 <%
 String[][] menu = {
 {"index.jsp", "home" },
-{"list1.jsp", "중학생" },
-{"list2.jsp", "고등학생" },
-{"list3.jsp", "문제풀이" },
+{"list1.jsp", "Lecture_list1" },
+{"list2.jsp", "Lecture_list2" },
+{"list3.jsp", "Lecture_list3" },
 };
 String currentMenu = request.getParameter("current");
 
@@ -78,10 +78,17 @@ if (conn != null) try{conn.close();} catch(SQLException e) {}
 			%>
 			
 			<!-- <LI><A href="show.jsp" style="margin-left:150px;" >My page</A>-->
-			<LI><A href="show.jsp?userid=<%= session.getAttribute("userId")%>" style="margin-left:150px;" >My page</A>
-			<a href="logout.jsp" style="margin-left:10px;">Logout</A></LI>
+					%>
+			<LI><A href="show.jsp?id=<%= session.getAttribute("numId")%>" style="margin-left:150px;" >My page</A>
+			
+			<a href="logout.jsp" style="margin-left:10px;">Logout</A>
 			<%
-					}
+			if(session.getAttribute("per") != null){
+			%>
+			<a href="admin.jsp" style="margin-left:10px;">admin_page</A></LI>
+			
+			<%
+			}}
 			%>
 		</div>
 		

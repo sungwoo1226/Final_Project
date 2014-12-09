@@ -24,7 +24,7 @@
 	
 	try {
 		conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-		stmt = conn.prepareStatement("DELETE FROM users WHERE id=?");
+		stmt = conn.prepareStatement("DELETE FROM list1 WHERE id=?");
 		stmt.setInt(1,  id);
 		
 		result = stmt.executeUpdate();
@@ -44,7 +44,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자_회원목록</title>
+<title>관리자_강의삭제</title>
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/base.css" rel="stylesheet">
 <script src="js/jquery-1.8.2.min.js"></script>
@@ -54,6 +54,18 @@
 	<jsp:include page="share/header.jsp">
 		<jsp:param name="current" value="Sign Up" />
 	</jsp:include>
+	
+	<%
+	 if(session.getAttribute("per") == null){ 
+	%>
+		
+	 			<script type= text/javascript>
+			alert("권한이 없습니다.");
+			window.location.replace("index.jsp");
+		</script>		
+	<%
+	 }
+	%>
 	<div class="container">
 		<% if (errorMsg != null) { %>
 		<div class="alert alert-danger">
@@ -61,10 +73,10 @@
 			<%= errorMsg %>
 		</div>
 		<% } else { %>
-		<div class="alert alert-success">사용자 정보를 삭제하였습니다.</div>
+		<div class="alert alert-success">강좌를 삭제하였습니다.</div>
 		<%}%>
 		<div class="form-group">
-			<a href="index.jsp" class="btn btn-default">목록으로</a>
+			<a href="admin_lecture.jsp" class="btn btn-default">목록으로</a>
 		</div>
 	</div>
 </body>

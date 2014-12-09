@@ -16,12 +16,15 @@
 	String dbPassword = "asdf";
 	
 	// 사용자 정보를 위한 변수 초기화
+	String numid = "";
 	String userid = "";
+	String name = "";
 	String pwd = "";
 	String per = "";
 	
 	//post
 	String id = request.getParameter("id");	
+	String name_ = request.getParameter("name_");
 	String password = request.getParameter("password");
 	
 	boolean login = false;
@@ -35,12 +38,16 @@
 
 		while(rs.next()) {
 			userid = rs.getString("userid");
+			name = rs.getString("name");
 			pwd = rs.getString("pwd");
 			per = rs.getString("per");
+			numid = rs.getString("id");
 			if (userid.equals(id) && pwd.equals(password)) {
 				// 로그인 성공
 				session.setAttribute("userId", userid);
+				session.setAttribute("name", name);
 				session.setAttribute("per", per);
+				session.setAttribute("numId", numid);
 				login = true;
 				break;
 			}
@@ -57,7 +64,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>회원목록</title>
+<title>Login</title>
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/base.css" rel="stylesheet">
 <script src="js/jquery-1.8.2.min.js"></script>
@@ -84,8 +91,12 @@
 				<%
 				} else if (login) {
 						// 로그인 성공
-						response.sendRedirect("index.jsp");
-						
+						%>
+					<script type=text/javascript>
+					alert(" 로그인 하였습니다.");
+					window.location.replace("index.jsp");
+					</script>
+					<%
 					} else {
 			%>
 				<div class="error">아이디나 비밀번호가 잘못되었습니다.</div>

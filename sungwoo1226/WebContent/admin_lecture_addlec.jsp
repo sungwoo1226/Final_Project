@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8" import="java.util.*"  import="java.sql.*" 
-		import="org.apache.commons.lang3.StringUtils"%>
-<%	
+	pageEncoding="UTF-8" import="java.util.*" import="java.sql.*"%>
+	
+<%
 	String errorMsg = null;
 
 	String actionUrl;
@@ -15,11 +15,8 @@
 	String dbPassword = "asdf";
 	
 	// 사용자 정보를 위한 변수 초기화
-	String userid = "";
-	String name = "";
-	String pwd = "";
-	String email = "";
-	String phone = "";
+	String lec_name = "";
+	String lec_url = "";
 	
 	// Request로 ID가 있는지 확인
 	int id = 0;
@@ -29,7 +26,7 @@
 
 	if (id > 0) {
 		// Request에 id가 있으면 update모드라 가정
-		actionUrl = "update.jsp";
+		actionUrl = "admin_lecture_update.jsp";
 		try {
 		    Class.forName("com.mysql.jdbc.Driver");
 
@@ -37,18 +34,17 @@
 			conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 
 	 		// 질의 준비
-			stmt = conn.prepareStatement("SELECT * FROM users WHERE id = ?");
+			stmt = conn.prepareStatement("SELECT * FROM list1 WHERE id = ?");
 			stmt.setInt(1, id);
 			
 			// 수행
 	 		rs = stmt.executeQuery();
 			
 			if (rs.next()) {
-				userid = rs.getString("userid");
-				name = rs.getString("name");
-				pwd = rs.getString("pwd");
-				email = rs.getString("email");
-				phone = rs.getString("phone");
+				lec_name = rs.getString("lec_name");
+				lec_url = rs.getString("lec_url");
+			
+				
 			}
 		}catch (SQLException e) {
 			errorMsg = "SQL 에러: " + e.getMessage();
@@ -59,14 +55,14 @@
 			if (conn != null) try{conn.close();} catch(SQLException e) {}
 		}
 	} else {
-		actionUrl = "register.jsp";
+		actionUrl = "admin_lecture_register.jsp";
 	}
-%>    
+%>  
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>회원가입</title>
+<meta charset="UTF-8">
+<title>관리자_강의목록</title>
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/base.css" rel="stylesheet">
 	<script src="js/jquery-1.8.2.min.js"></script>
@@ -74,10 +70,24 @@
 </head>
 <body>
 <jsp:include page="share/header.jsp">
-  <jsp:param name="current" value="Sign Up"/>
-</jsp:include>
+		<jsp:param name="current" value="문제풀이" />
+	</jsp:include>
 
- <div class="container">
+<jsp:include page="share/footer.jsp" />
+<div class="container">
+
+<%
+	 if(session.getAttribute("per") == null){ 
+	%>
+		
+	 			<script type= text/javascript>
+			alert("권한이 없습니다.");
+			window.location.replace("index.jsp");
+		</script>		
+	<%
+	 }
+	%>
+	
  <%
  if (errorMsg != null && errorMsg.length() > 0 ) {
 		// SQL 에러의 경우 에러 메시지 출력
@@ -93,57 +103,28 @@
 			  		out.println("<input type='hidden' name='id' value='"+id+"'>");
 			  	}
 			  	%>
+		
 				<div class="form-group ">
-					<label class="col-sm-2 control-label" for="userid">ID</label>
+					<label class="col-sm-2 control-label" for="lec_name">Lecture name</label>
 					<div class="col-sm-3">
-						<input type="text" class="form-control" name="userid" value="<%=userid%>">
+						<input type="lec_name" class="form-control" placeholder="Lecture name" name="lec_name" value="<%=lec_name%>">
 					</div>
 				</div>
 
-				<div class="form-group ">
-					<label class="col-sm-2 control-label" for="name">Name</label>
-					<div class="col-sm-3">
-						<input type="text" class="form-control" placeholder="홍길동" name="name" value="<%=name%>">
-					</div>
-				</div>
-
-				<% if (id <= 0) { %>
-					<%-- 신규 가입일 때만 비밀번호 입력창을 나타냄 --%>
-					<div class="form-group ">
-						<label class="col-sm-2 control-label" for="pwd">Password</label>
-						<div class="col-sm-3">
-							<input type="password" class="form-control" name="pwd">
-						</div>
-					</div>
-	
-					<div class="form-group ">
-						<label class="col-sm-2 control-label" for="pwd_confirm">Password Confirmation</label>
-						<div class="col-sm-3">
-							<input type="password" class="form-control" name="pwd_confirm">
-						</div>
-					</div>
-				<% } %>
-				<div class="form-group ">
-					<label class="col-sm-2 control-label" for="email">E-mail</label>
-					<div class="col-sm-3">
-						<input type="email" class="form-control" placeholder="WOW@blizzard.com" name="email" value="<%=email%>">
-					</div>
-				</div>
-				
 				
 				<div class="form-group ">
-					<label class="col-sm-2 control-label" for="phone">Phone Number</label>
+					<label class="col-sm-2 control-label" for="lec_url">Lecture URL</label>
 					<div class="col-sm-3">
-						<input type="phone" class="form-control" placeholder="010-9959-5663" name="phone" value="<%=phone%>">
+						<input type="lec_url" class="form-control" placeholder="Lecture URL" name="lec_url" value="<%=lec_url%>">
 					</div>
 				</div>
 
-	
+
 				<div class="form-group">
 					<input type=button value="Cancel" OnClick="javascript:history.back(-1)"
 						class="col-sm-offset-2 btn btn-default">
 					<% if (id <= 0) { %>
-						<input type="submit" class="btn btn-default btn-primary" value="Sign in">
+						<input type="submit" class="btn btn-default btn-primary" value="add">
 					<% } else { %>
 						<input type="submit" class="btn btn-default btn-primary" value="Modify">
 					<% } %>

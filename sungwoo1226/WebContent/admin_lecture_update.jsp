@@ -18,40 +18,31 @@
 	try {
 		id = Integer.parseInt(request.getParameter("id"));
 	} catch (Exception e) {}
-	String userid = request.getParameter("userid");
-	String name = request.getParameter("name");
-	String email = request.getParameter("email");
-	String phone = request.getParameter("phone");
+	String lec_name = request.getParameter("lec_name");
+	String lec_url = request.getParameter("lec_url");
 	
 	List<String> errorMsgs = new ArrayList<String>();
 	int result = 0;
 	
-	if (userid == null || userid.trim().length() == 0) {
-		errorMsgs.add("ID를 반드시 입력해주세요.");
+	if (lec_name == null || lec_name.trim().length() == 0) {
+		errorMsgs.add("강좌명을 반드시 입력해주세요.");
 	}
 
 	
-	if (name == null || name.trim().length() == 0) {
-		errorMsgs.add("이름을 반드시 입력해주세요.");
+	if (lec_url == null || lec_url.trim().length() == 0) {
+		errorMsgs.add("강좌 링크를 반드시 입력해주세요. 돈벌기 싫으세요?");
 	}
 	
-	if (phone == null || name.trim().length() == 0 ) {
-		errorMsgs.add("전화번호는 반드시 입력해주세요.");
-	}
 
 	if (errorMsgs.size() == 0) {
 		try {
 			conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 			stmt = conn.prepareStatement(
-					"UPDATE users " +
-					"SET  userid=?, name=?, email=?, phone=? " +
-					"WHERE id=?"
+					"UPDATE list1 " + "SET  lec_name=?, lec_url=? " + "WHERE id=?"
 					);
-			stmt.setString(1,  userid);
-			stmt.setString(2,  name);
-			stmt.setString(3,  email);
-			stmt.setString(4,  phone);
-			stmt.setInt(5,  id);
+			stmt.setString(1,  lec_name);
+			stmt.setString(2,  lec_url);
+			stmt.setInt(3,  id);
 			
 			result = stmt.executeUpdate();
 			if (result != 1) {
@@ -71,7 +62,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>회원정보수정</title>
+<title>관리자_강의목록 변경</title>
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/base.css" rel="stylesheet">
 <script src="js/jquery-1.8.2.min.js"></script>
@@ -81,6 +72,18 @@
 	<jsp:include page="share/header.jsp">
 		<jsp:param name="current" value="Sign Up" />
 	</jsp:include>
+
+<%
+	 if(session.getAttribute("per") == null){ 
+	%>
+		
+	 			<script type= text/javascript>
+			alert("권한이 없습니다.");
+			window.location.replace("index.jsp");
+		</script>		
+	<%
+	 }
+	%>
 
 	<div class="container">
 		<% if (errorMsgs.size() > 0) { %>
@@ -97,10 +100,10 @@
 		</div>
 		<% } else if (result == 1) { %>
 		<div class="alert alert-success">
-			<b><%= name %></b>님 정보가 수정되었습니다.
+			<b><%= lec_name %></b> 강좌 정보가 수정되었습니다.
 		</div>
 		<div class="form-group">
-			<a href="index.jsp" class="btn btn-default">목록으로</a>
+			<a href="admin_lecture.jsp" class="btn btn-default">목록으로</a>
 		</div>
 		<%}%>
 	</div>

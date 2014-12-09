@@ -12,49 +12,32 @@
 	String dbPassword = "asdf";
 	
 	request.setCharacterEncoding("utf-8");
-	String userid = request.getParameter("userid");
-	String pwd = request.getParameter("pwd");
-	String pwd_confirm = request.getParameter("pwd_confirm");
-	String name = request.getParameter("name");
-	String email = request.getParameter("email");
-	String phone = request.getParameter("phone");
+	
+	String lec_name = request.getParameter("lec_name");
+	String lec_url = request.getParameter("lec_url");
 	
 	
 	List<String> errorMsgs = new ArrayList<String>();
 	int result = 0;
 	
-	if (userid == null || userid.trim().length() == 0) {
-		errorMsgs.add("ID를 반드시 입력해주세요.");
+	if (lec_name == null || lec_name.trim().length() == 0) {
+		errorMsgs.add("강좌명을 반드시 입력해주세요.");
 	}
+
 	
-	if (pwd == null || pwd.length() < 6) {
-		errorMsgs.add("비밀번호는 6자 이상 입력해주세요.");
-	} 
-	
-	if (!pwd.equals(pwd_confirm)) {
-		errorMsgs.add("비밀번호가 일치하지 않습니다.");
-	}
-	
-	if (name == null || name.trim().length() == 0) {
-		errorMsgs.add("이름을 반드시 입력해주세요.");
-	}
-	
-	if (name == null || phone.trim().length() == 0) {
-		errorMsgs.add("전화번호를 반드시 입력해주세요.");
+	if (lec_url == null || lec_url.trim().length() == 0) {
+		errorMsgs.add("강좌 링크를 반드시 입력해주세요. 돈벌기 싫으세요?");
 	}
 	
 	if (errorMsgs.size() == 0) {
 		try {
 			conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 			stmt = conn.prepareStatement(
-					"INSERT INTO users(userid, name, pwd, email, phone) " +
-					"VALUES(?, ?, ?, ?, ?)"
+					"INSERT INTO list1 (lec_name, lec_url)" + "VALUES(?, ?)"
 					);
-			stmt.setString(1,  userid);
-			stmt.setString(2,  name);
-			stmt.setString(3,  pwd);
-			stmt.setString(4,  email);
-			stmt.setString(5,  phone);
+			stmt.setString(1,  lec_name);
+			stmt.setString(2,  lec_url);
+			
 			
 			result = stmt.executeUpdate();
 			if (result != 1) {
@@ -74,7 +57,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>회원가입</title>
+	<title>관리자_강의추가</title>
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/base.css" rel="stylesheet">
 	<script src="js/jquery-1.8.2.min.js"></script>
@@ -86,6 +69,19 @@
 </jsp:include>
 
  	<div class="container">
+ 	
+ 	<%
+	 if(session.getAttribute("per") == null){ 
+	%>
+		
+	 			<script type= text/javascript>
+			alert("권한이 없습니다.");
+			window.location.replace("index.jsp");
+		</script>		
+	<%
+	 }
+	%>
+	
  		<% if (errorMsgs.size() > 0) { %>
  			<div class="alert alert-danger">
  				<h3>Errors:</h3>
@@ -100,10 +96,10 @@
 		 	</div>
 	 	<% } else if (result == 1) { %>
 	 		<div class="alert alert-success">
-	 			<b><%= name %></b>님 등록해주셔서 감사합니다.
+	 			<b><%= lec_name %></b> 강좌가 등록되었습니다.
 	 		</div>
 		 	<div class="form-group">
-		 		<a href="index.jsp" class="btn">목록으로</a>
+		 		<a href="admin_lecture.jsp" class="btn">목록으로</a>
 		 	</div>
 	 		
 	 	<%}%>

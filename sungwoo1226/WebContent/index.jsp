@@ -34,7 +34,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>회원목록</title>
+<title>정성우&변지성</title>
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/base.css" rel="stylesheet">
 <script src="js/jquery-1.8.2.min.js"></script>
@@ -74,118 +74,13 @@
 				rs = stmt
 						.executeQuery("SELECT * FROM users ORDER BY name LIMIT "
 								+ startPos + ", " + numInPage);
-				String gender;
 		%>
-
-
-		
 		
 		<img src="img/web2.jpg" width="700" height="467" alt="" />
 		
-		<script type= text/javascript>
-			alert(<%out.println(session.getAttribute("per"));%>);
-		</script>
-		
-		<% if(session.getAttribute("per") != null){ %>
-		
-		<div class="row">
-			<div class="col-md-12 page-info">
-				<div class="pull-left">
-					Total <b><%=numItems%></b> users
-				</div>
-				<div class="pull-right">
-					<b><%=pageNo%></b> page / total <b><%=numPages%></b> pages
-				</div>
-			</div>
-		</div>
-
-		
-
-		<div id="admin_for">
-			<table class="table table-bordered table-stripped">
-				<thead>
-					<tr>
-						<th>ID</th>
-						<th>Name</th>
-						<th>Email</th>
-						<th>Gender</th>
-						<th>Country</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<%
-						while (rs.next()) {
-								gender = rs.getString("gender").equals("M") ? "남성" : "여성";
-					%>
-					<tr>
-						<td><a href="show.jsp?id=<%=rs.getInt("id")%>"><%=rs.getString("userid")%></a></td>
-						<td><%=rs.getString("name")%></td>
-						<td><%=rs.getString("email")%></td>
-						<td><%=gender%></td>
-						<td><%=rs.getString("country")%></td>
-						<td><a href="signup.jsp?id=<%=rs.getInt("id")%>"
-							class="btn btn-xs">modify</a> <a href="#"
-							class="btn btn-xs btn-danger" data-action="delete"
-							data-id="<%=rs.getInt("id")%>">delete</a></td>
-					</tr>
-					<%
-						}
-					%>
-				</tbody>
-			</table>
-		</div>
-
-
-		<nav class="pagination_centered">
-			<ul class="pagination">
-				<%
-					// 페이지 네비게이션을 위한 준비
-						int startPageNo, endPageNo;
-						int delta = 5;
-						startPageNo = (pageNo <= delta) ? 1 : pageNo - delta;
-						endPageNo = startPageNo + (delta * 2) + 1;
-
-						if (endPageNo > numPages) {
-							endPageNo = numPages;
-						}
-
-						// 이전 페이지로
-						if (pageNo <= 1) {
-				%>
-				<li class="disabled"><a href="#">&laquo;</a></li>
-				<%
-					} else {
-				%>
-				<li><a href="index.jsp?page=<%=pageNo - 1%>">&laquo;</a></li>
-				<%
-					}
-
-						// 페이지 목록 출력 (현재-delta ~ 현재+delta까지)
-						String className = "";
-						for (int i = startPageNo; i <= endPageNo; i++) {
-							className = (i == pageNo) ? "active" : "";
-							out.println("<li class='" + className + "'>");
-							out.println("<a href='index.jsp?page=" + i + "'>" + i
-									+ "</a>");
-							out.println("</li>");
-						}
-
-						// 다음 페이지로
-						if (pageNo >= numPages) {
-				%>
-				<li class="disabled"><a href="#">&raquo;</a></li>
-				<%
-					} else {
-				%>
-				<li><a href="index.jsp?page=<%=pageNo + 1%>">&raquo;</a></li>
-				<%
-					}
-				%>
-			</ul>
-		</nav>
+	
 		<%
-		}
+		
 			} catch (SQLException e) {
 				// SQL 에러의 경우 에러 메시지 출력
 				out.print("<div class='alert'>" + e.getLocalizedMessage()

@@ -2,9 +2,7 @@
 	pageEncoding="UTF-8" import="java.util.*" import="java.sql.*"
 	import="org.apache.commons.lang3.StringUtils"%>
 <%
-  String[][] genders = {{"M", "남성"}, {"F", "여성"}};
-  
-  String errorMsg = null;
+   String errorMsg = null;
 
   String actionUrl;
   // DB 접속을 위한 준비
@@ -17,13 +15,12 @@
   String dbPassword = "asdf";
   
   // 사용자 정보를 위한 변수 초기화
+  String numid = "";	// 사용자 자신 정보를 보기 위한 것
   String userid = "";
   String name = "";
   String pwd = "";
   String email = "";
-  String country = "";
-  String gender = "";
-  String favorites = "";
+  String phone = "";
 
   // Request로 ID가 있는지 확인
   int id = 0;
@@ -31,7 +28,7 @@
     id = Integer.parseInt(request.getParameter("id"));
   } catch (Exception e) {}
 
-  if (id > 0) {
+  if (id > 0 || numid == session.getAttribute("numId")) {
     try {
         Class.forName("com.mysql.jdbc.Driver");
 
@@ -50,9 +47,7 @@
         name = rs.getString("name");
         pwd = rs.getString("pwd");
         email = rs.getString("email");
-        country = rs.getString("country");
-        gender = rs.getString("gender");
-        favorites = rs.getString("favorites");
+        phone = rs.getString("phone");
       }
     }catch (SQLException e) {
       errorMsg = "SQL 에러: " + e.getMessage();
@@ -70,7 +65,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>회원목록</title>
+<title>회원정보</title>
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/base.css" rel="stylesheet">
 <script src="js/jquery-1.8.2.min.js"></script>
@@ -93,15 +88,9 @@
 			<h3><%=name %></h3>
 			<ul>
 				<li>User ID: <%=userid %></li>
-				<li>Country: <%=country %></li>
 				<li>Email: <a href="mailto:<%=email%>"><%=email %></a></li>
-				<li>Gender: <% for (String[] arr: genders) {
-        	  if (arr[0].equals(gender)) {
-        		  out.println(arr[1]);
-        	  }
-          } %>
-				</li>
-				<li>Favorites: <%=favorites %></li>
+				<li>Phone Number: <%=phone %></a></li>
+				
 			</ul>
 		</div>
 		<% } %>
